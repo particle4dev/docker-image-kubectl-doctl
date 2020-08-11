@@ -26,3 +26,6 @@ $ docker run  \
 #### More examples
 
 Most examples documented in [JSON Server project site](https://github.com/typicode/json-server) will work.
+
+
+docker run --rm particle4dev/kubectl-doctl:kubectl-1.18.6-doctl-1.46.0 kubectl version
