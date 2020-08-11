@@ -43,7 +43,7 @@ $ docker run \
 --rm \
 --env-file $ENV_FILE \
 -v <path_to_save_kube_config>/config:/root/.kube/config \
-particle4dev/kubectl-doctl:kubectl-1.18.6-doctl-1.46.0 kubectl get nodes
+particle4dev/kubectl-doctl kubectl get nodes
 ```
 
 ### How to add a new version
