@@ -28,10 +28,10 @@ jobs:
               $CI_PROJECT_DIR/scripts/custom-docker-build $line -t "$CI_REGISTRY_IMAGE:$line"
               LATEST_VERSION=$line
             done < "$CI_PROJECT_DIR/VERSIONS"
-            # if [ ! -z "$LATEST_VERSION" ]; then
-            #   docker tag $CI_REGISTRY_IMAGE:$LATEST_VERSION $CI_REGISTRY_IMAGE:latest
-            #   docker push $CI_REGISTRY_IMAGE:latest
-            # fi
+            if [ ! -z "$LATEST_VERSION" ]; then
+              docker tag $CI_REGISTRY_IMAGE:$LATEST_VERSION $CI_REGISTRY_IMAGE:latest
+              docker push $CI_REGISTRY_IMAGE:latest
+            fi
 
 # Orchestrate our job run sequence
 workflows:
