@@ -1,0 +1,42 @@
+version: 2.1
+
+# Define the jobs we want to run for this project
+jobs:
+  publish:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: "Login docker hub"
+          command: |
+            docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_TOKEN
+      # Run a step to setup an environment variable
+      - run:
+          name: "Setup custom environment variables"
+          command: |
+            echo 'export CI_PROJECT_DIR="$(pwd)"' >> $BASH_ENV
+            echo 'export CI_IMAGE="$DOCKER_HUB_USER/json-server"' >> $BASH_ENV
+            echo 'export CI_REGISTRY_IMAGE="docker.io/${CI_IMAGE}"' >> $BASH_ENV
+      - run:
+          name: "Run building scripts"
+          command: |
+            chmod +x -R $CI_PROJECT_DIR/scripts
+            LATEST_VERSION=""
+            while IFS= read -r line
+            do
+              $CI_PROJECT_DIR/scripts/custom-docker-build $line -t "$CI_REGISTRY_IMAGE:$line"
+              LATEST_VERSION=$line
+            done < "$CI_PROJECT_DIR/VERSIONS"
+            if [ ! -z "$LATEST_VERSION" ]; then
+              docker tag $CI_REGISTRY_IMAGE:$LATEST_VERSION $CI_REGISTRY_IMAGE:latest
+              docker push $CI_REGISTRY_IMAGE:latest
+            fi
+
+# Orchestrate our job run sequence
+workflows:
+  build_and_test:
+    jobs:
+      - publish:
+          filters:
+            branches:
+              only: adding-new-examples

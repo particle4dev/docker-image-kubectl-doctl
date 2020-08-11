@@ -1,0 +1,36 @@
+FROM alpine:3.12.0
+MAINTAINER Nam Hoang <particel4dev@gmail.com>
+
+ENV DUMB_INIT_VERSION 1.2.2
+
+RUN \
+  apk add --no-cache --virtual .build-deps \
+    gcc \
+    libc-dev \
+    make \
+    openssl-dev \
+    pcre-dev \
+    zlib-dev \
+    linux-headers \
+    curl \
+    gnupg \
+    libxslt-dev \
+    gd-dev \
+    geoip-dev \
+    perl-dev \
+    wget \
+    ca-certificates \
+    openssl
+
+# install kubectl
+RUN wget -O /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v1.16.8/bin/linux/amd64/kubectl && \
+    chmod +x /usr/local/bin/kubectl
+
+# remove packages
+RUN apk del .build-deps
+
+# Define default command.
+ADD docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD [""]

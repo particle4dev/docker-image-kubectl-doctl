@@ -1,0 +1,105 @@
+#!/bin/bash
+
+###
+# HOW THIS WORK
+#
+# 1. TRY TO PULL DOCKER IMAGES FROM GITLAB; IF exist THEN QUIT
+# 2. WRITE DOCKERFILE
+# 3. BUILD AND PUSH
+#
+# If you want to rebuild, delete images on gitlab
+#
+# Test
+#
+# ./scripts/custom-docker-build nodejs-8.2.1-dumb-1.2.0 "registry.gitlab.com/particle4dev/docker-node:nodejs-8.2.1-dumb-1.2.0"
+###
+
+. "$CI_PROJECT_DIR/scripts/utils"
+
+set -e
+IFS=$'\n\t'
+
+function parse_arguments() {
+  read base
+  read base_version
+  printf -- "-f $Dockerfile " "$base"
+
+  while read image; do
+    read version
+    case "$image" in
+      dumb) dumb_version=$version ;;
+      jsonserver) jsonserver_version=$version ;;
+      *) exit 1;;
+    esac
+  done
+
+  templates -d=$dumb_version -b=$base -v=$base_version -j=$jsonserver_version $CI_PROJECT_DIR/Dockerfile.template
+}
+
+# templates -u=123 -p=345 ./bin/utils/attachments.tmpl
+function templates {
+  for i in "$@"
+  do
+  case $i in
+  -b=*|--base=*)
+  CUSTOM_IMAGE_NAME="${i#*=}"
+  shift
+  ;;
+  -v=*|--version=*)
+  CUSTOM_IMAGE_VERSION="${i#*=}"
+  shift
+  ;;
+  -d=*|--dumb=*)
+  DUMB_VERSION="${i#*=}"
+  shift
+  ;;
+  -j=*|--jsonserver=*)
+  JSONSERVER_VERSION="${i#*=}"
+  shift
+  ;;
+  *)
+  # unknown option
+  ;;
+  esac
+  done
+
+  if ! fileExists $@; then
+    echo "not found file"
+    return 1
+  fi
+
+  while IFS='' read -r line || [[ -n "$line" ]]; do
+    echo $line | sed -e "s;%CUSTOM_IMAGE_NAME%;$CUSTOM_IMAGE_NAME;g" -e "s;%CUSTOM_IMAGE_VERSION%;$CUSTOM_IMAGE_VERSION;g" -e "s;%DUMB_VERSION%;$DUMB_VERSION;g" -e "s;%JSONSERVER_VERSION%;$JSONSERVER_VERSION;g" >> $Dockerfile
+  done < $@
+}
+
+function generate_command() {
+  buildimage_name=$1; shift;
+
+  printf -- "docker build "
+  echo $buildimage_name | tr '-' '\n' | parse_arguments
+
+  for i in "$@"
+  do
+    printf -- "%s " "$i"
+  done
+  printf -- ".\\n"
+}
+
+exitCode=$($CI_PROJECT_DIR/scripts/pull-docker-image $1 | tail -n 1)
+
+if [ $exitCode -eq "0" ]; then
+  echo "FOUND $1"; exit 0;
+fi
+
+Dockerfile="$CI_PROJECT_DIR/Dockerfile"
+
+# Empty file
+if fileExists $Dockerfile; then
+  cp /dev/null $Dockerfile
+fi
+
+docker_command=$(generate_command $@)
+echo "$1: executing $docker_command"
+eval $docker_command
+docker push $1
