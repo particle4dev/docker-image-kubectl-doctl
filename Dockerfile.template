@@ -23,6 +23,10 @@ RUN \
     openssl \
     tar
 
+# install dumb-init
+RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_amd64 && \
+    chmod +x /usr/local/bin/dumb-init
+
 # install kubectl
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl && \
   chmod +x ./kubectl && \
@@ -39,5 +43,6 @@ RUN curl -LO https://github.com/digitalocean/doctl/releases/download/v1.46.0/doc
 RUN apk del .build-deps
 
 # Define default command.
-ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-
+ADD docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
