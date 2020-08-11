@@ -53,15 +53,5 @@ particle4dev/kubectl-doctl kubectl get nodes
 - Step2: Add version you wanted in bottom the file. E.g
 
 ```
-node-8.9.3-dumb-1.2.1
+kubectl-1.18.6-doctl-1.46.0
 ```
-
-
-
-
-
-docker run --rm particle4dev/kubectl-doctl:kubectl-1.18.6-doctl-1.46.0 kubectl version
- 
-docker run --rm -it particle4dev/kubectl-doctl kubectl version
- 
-docker run --rm -it --entrypoint /bin/sh particle4dev/kubectl-doctl
