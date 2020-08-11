@@ -9,9 +9,6 @@
 #
 # If you want to rebuild, delete images on gitlab
 #
-# Test
-#
-# ./scripts/custom-docker-build nodejs-8.2.1-dumb-1.2.0 "registry.gitlab.com/particle4dev/docker-node:nodejs-8.2.1-dumb-1.2.0"
 ###
 
 . "$CI_PROJECT_DIR/scripts/utils"
@@ -33,39 +30,6 @@ function parse_arguments() {
   while IFS='' read -r line || [[ -n "$line" ]]; do
     echo $line | sed ${ARGS[@]} >> $Dockerfile
   done < $CI_PROJECT_DIR/Dockerfile.template
-}
-
-# templates -u=123 -p=345 ./bin/utils/attachments.tmpl
-function templates {
-  for i in "$@"
-  do
-  case $i in
-  -b=*|--base=*)
-  CUSTOM_IMAGE_NAME="${i#*=}"
-  shift
-  ;;
-  -v=*|--version=*)
-  CUSTOM_IMAGE_VERSION="${i#*=}"
-  shift
-  ;;
-  -d=*|--doctl=*)
-  DOCTL_VERSION="${i#*=}"
-  shift
-  ;;
-  *)
-  # unknown option
-  ;;
-  esac
-  done
-
-  if ! fileExists $@; then
-    echo "not found file"
-    return 1
-  fi
-
-  while IFS='' read -r line || [[ -n "$line" ]]; do
-    echo $line | sed -e "s;%CUSTOM_IMAGE_NAME%;$CUSTOM_IMAGE_NAME;g" -e "s;%CUSTOM_IMAGE_VERSION%;$CUSTOM_IMAGE_VERSION;g" -e "s;%DOCTL_VERSION%;$DOCTL_VERSION;g" >> $Dockerfile
-  done < $@
 }
 
 function generate_command() {
@@ -99,9 +63,3 @@ echo "$3: executing $docker_command"
 
 eval $docker_command
 docker push $3
-
-
-# ARGS=()
-# ARGS+=(-e "s;%var%;123;g")
-# ARGS+=(-e "s;%beta%;abcd;g")
-# echo "haha %var% %beta%" | sed ${ARGS[@]}
