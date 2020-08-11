@@ -20,8 +20,6 @@ set -e
 IFS=$'\n\t'
 
 function parse_arguments() {
-  echo "parse_arguments"
-
   read base
   read base_version
   printf -- "-f $Dockerfile " "$base"
@@ -39,8 +37,6 @@ function parse_arguments() {
 
 # templates -u=123 -p=345 ./bin/utils/attachments.tmpl
 function templates {
-  echo "templates"
-
   for i in "$@"
   do
   case $i in
@@ -73,9 +69,6 @@ function templates {
 }
 
 function generate_command() {
-
-  echo "generate_command"
-
   buildimage_name=$1; shift;
 
   printf -- "docker build "
@@ -103,10 +96,6 @@ fi
 
 docker_command=$(generate_command $@)
 echo "$3: executing $docker_command"
-
-echo $Dockerfile
-
-cat $Dockerfile
 
 eval $docker_command
 docker push $3
