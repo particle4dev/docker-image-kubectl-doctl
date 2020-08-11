@@ -21,7 +21,7 @@ function parse_arguments() {
   read base_version
   printf -- "-f $Dockerfile " "$base"
 
-  ARGS=()
+  ARGS=(-e "s;%$base%;$base_version;g")
   while read image; do
     read version
     ARGS+=(-e "s;%$image%;$version;g")
