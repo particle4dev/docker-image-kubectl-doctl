@@ -4,9 +4,7 @@ This repository contains Dockerized [kubectl](https://github.com/kubernetes/kube
 
 **The problem** that this image tried to solved:
 
-
-
-**dumb-init** is a simple process supervisor and init system designed to run as PID 1 inside minimal container environments (such as [Docker](https://www.docker.com/)). It is deployed as a small, statically-linked binary written in C.
+When you get the credentials of Digitalocean Kubernetes cluster to your local and use it with Kubeclt Docker Image, it won't work because Kubeclt command needs Doctl to connect to cluster. I solved this issue by merging Kubectl and Doctl into one image. Please see Usage section to see how to use this!
 
 <br />
 
@@ -24,18 +22,26 @@ This docker image contains the following software stack:
 
 ## Usage
 
-#### Show usage
-
-- kubectl
-
-```
-$ docker run --rm -it particle4dev/kubectl-doctl kubectl
-```
+#### Usage
 
 - doctl
 
+```sh
+$ docker run \
+--rm \
+--env-file $ENV_FILE \
+-v <path_to_save_kube_config>/config:/root/.kube/config \
+particle4dev/kubectl-doctl doctl kubernetes cluster kubeconfig save <cluster_name>
 ```
-$ docker run --rm -it particle4dev/kubectl-doctl doctl
+
+- kubectl
+
+```sh
+$ docker run \
+--rm \
+--env-file $ENV_FILE \
+-v <path_to_save_kube_config>/config:/root/.kube/config \
+particle4dev/kubectl-doctl:kubectl-1.18.6-doctl-1.46.0 kubectl get nodes
 ```
 
 ### How to add a new version
