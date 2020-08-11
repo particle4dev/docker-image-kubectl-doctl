@@ -2,8 +2,8 @@ FROM alpine:3.12.0
 MAINTAINER Nam Hoang <particel4dev@gmail.com>
 
 ENV DUMB_INIT_VERSION 1.2.2
-ENV KUBECTL_VERSION 1.18.0
-ENV DOCTL_VERSION 1.46.0
+ENV KUBECTL_VERSION %kubectl%
+ENV DOCTL_VERSION %doctl%
 
 RUN \
   apk add --no-cache --virtual .build-deps \

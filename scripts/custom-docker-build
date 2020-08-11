@@ -24,15 +24,15 @@ function parse_arguments() {
   read base_version
   printf -- "-f $Dockerfile " "$base"
 
+  ARGS=()
   while read image; do
     read version
-    case "$image" in
-      doctl) doctl_version=$version ;;
-      *) exit 1;;
-    esac
+    ARGS+=(-e "s;%$image%;$version;g")
   done
 
-  templates -d=$doctl_version -b=$base -v=$base_version $CI_PROJECT_DIR/Dockerfile.template
+  while IFS='' read -r line || [[ -n "$line" ]]; do
+    echo $line | sed ${ARGS[@]} >> $Dockerfile
+  done < $CI_PROJECT_DIR/Dockerfile.template
 }
 
 # templates -u=123 -p=345 ./bin/utils/attachments.tmpl
@@ -99,3 +99,9 @@ echo "$3: executing $docker_command"
 
 eval $docker_command
 docker push $3
+
+
+# ARGS=()
+# ARGS+=(-e "s;%var%;123;g")
+# ARGS+=(-e "s;%beta%;abcd;g")
+# echo "haha %var% %beta%" | sed ${ARGS[@]}
