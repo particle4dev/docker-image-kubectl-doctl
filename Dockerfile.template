@@ -2,6 +2,8 @@ FROM alpine:3.12.0
 MAINTAINER Nam Hoang <particel4dev@gmail.com>
 
 ENV DUMB_INIT_VERSION 1.2.2
+ENV KUBECTL_VERSION %kubectl%
+ENV DOCTL_VERSION %doctl%
 
 RUN \
   apk add --no-cache --virtual .build-deps \
@@ -20,11 +22,24 @@ RUN \
     perl-dev \
     wget \
     ca-certificates \
-    openssl
+    openssl \
+    tar
+
+# install dumb-init
+RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_amd64 && \
+    chmod +x /usr/local/bin/dumb-init
 
 # install kubectl
-RUN wget -O /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v1.16.8/bin/linux/amd64/kubectl && \
-    chmod +x /usr/local/bin/kubectl
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl && \
+  chmod +x ./kubectl && \
+  mv ./kubectl /usr/local/bin/kubectl
+
+# install doctl
+RUN curl -LO https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-linux-amd64.tar.gz && \
+  tar xf ./doctl-${DOCTL_VERSION}-linux-amd64.tar.gz && \
+  rm -r ./doctl-${DOCTL_VERSION}-linux-amd64.tar.gz && \
+  chmod +x ./doctl && \
+  mv ./doctl /usr/local/bin/doctl
 
 # remove packages
 RUN apk del .build-deps
@@ -33,4 +48,3 @@ RUN apk del .build-deps
 ADD docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD [""]
