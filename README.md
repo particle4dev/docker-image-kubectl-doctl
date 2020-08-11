@@ -29,3 +29,5 @@ Most examples documented in [JSON Server project site](https://github.com/typico
 
 
 docker run --rm particle4dev/kubectl-doctl:kubectl-1.18.6-doctl-1.46.0 kubectl version
+
+docker run --rm -it --entrypoint /bin/sh particle4dev/kubectl-doctl

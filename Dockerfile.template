@@ -39,6 +39,5 @@ RUN curl -LO https://github.com/digitalocean/doctl/releases/download/v1.46.0/doc
 RUN apk del .build-deps
 
 # Define default command.
-ADD docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
-ENTRYPOINT ["/docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+
