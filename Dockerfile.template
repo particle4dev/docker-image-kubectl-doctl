@@ -2,6 +2,8 @@ FROM alpine:3.12.0
 MAINTAINER Nam Hoang <particel4dev@gmail.com>
 
 ENV DUMB_INIT_VERSION 1.2.2
+ENV KUBECTL_VERSION 1.18.0
+ENV DOCTL_VERSION 1.46.0
 
 RUN \
   apk add --no-cache --virtual .build-deps \
@@ -28,14 +30,14 @@ RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/
     chmod +x /usr/local/bin/dumb-init
 
 # install kubectl
-RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl && \
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl && \
   chmod +x ./kubectl && \
   mv ./kubectl /usr/local/bin/kubectl
 
 # install doctl
-RUN curl -LO https://github.com/digitalocean/doctl/releases/download/v1.46.0/doctl-1.46.0-linux-amd64.tar.gz && \
-  tar xf ./doctl-1.46.0-linux-amd64.tar.gz && \
-  rm -r ./doctl-1.46.0-linux-amd64.tar.gz && \
+RUN curl -LO https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-linux-amd64.tar.gz && \
+  tar xf ./doctl-${DOCTL_VERSION}-linux-amd64.tar.gz && \
+  rm -r ./doctl-${DOCTL_VERSION}-linux-amd64.tar.gz && \
   chmod +x ./doctl && \
   mv ./doctl /usr/local/bin/doctl
 
