@@ -52,8 +52,8 @@ function templates {
   CUSTOM_IMAGE_VERSION="${i#*=}"
   shift
   ;;
-  -k=*|--doctl=*)
-  doctl_VERSION="${i#*=}"
+  -d=*|--doctl=*)
+  DOCTL_VERSION="${i#*=}"
   shift
   ;;
   *)
@@ -68,7 +68,7 @@ function templates {
   fi
 
   while IFS='' read -r line || [[ -n "$line" ]]; do
-    echo $line | sed -e "s;%CUSTOM_IMAGE_NAME%;$CUSTOM_IMAGE_NAME;g" -e "s;%CUSTOM_IMAGE_VERSION%;$CUSTOM_IMAGE_VERSION;g" -e "s;%doctl_VERSION%;$doctl_VERSION;g" >> $Dockerfile
+    echo $line | sed -e "s;%CUSTOM_IMAGE_NAME%;$CUSTOM_IMAGE_NAME;g" -e "s;%CUSTOM_IMAGE_VERSION%;$CUSTOM_IMAGE_VERSION;g" -e "s;%DOCTL_VERSION%;$DOCTL_VERSION;g" >> $Dockerfile
   done < $@
 }
 
