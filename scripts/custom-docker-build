@@ -29,12 +29,12 @@ function parse_arguments() {
   while read image; do
     read version
     case "$image" in
-      kubectl) kubectl_version=$version ;;
+      doctl) doctl_version=$version ;;
       *) exit 1;;
     esac
   done
 
-  templates -d=$kubectl_version -b=$base -v=$base_version $CI_PROJECT_DIR/Dockerfile.template
+  templates -d=$doctl_version -b=$base -v=$base_version $CI_PROJECT_DIR/Dockerfile.template
 }
 
 # templates -u=123 -p=345 ./bin/utils/attachments.tmpl
@@ -52,8 +52,8 @@ function templates {
   CUSTOM_IMAGE_VERSION="${i#*=}"
   shift
   ;;
-  -k=*|--kubectl=*)
-  KUBECTL_VERSION="${i#*=}"
+  -k=*|--doctl=*)
+  doctl_VERSION="${i#*=}"
   shift
   ;;
   *)
@@ -68,7 +68,7 @@ function templates {
   fi
 
   while IFS='' read -r line || [[ -n "$line" ]]; do
-    echo $line | sed -e "s;%CUSTOM_IMAGE_NAME%;$CUSTOM_IMAGE_NAME;g" -e "s;%CUSTOM_IMAGE_VERSION%;$CUSTOM_IMAGE_VERSION;g" -e "s;%KUBECTL_VERSION%;$KUBECTL_VERSION;g" >> $Dockerfile
+    echo $line | sed -e "s;%CUSTOM_IMAGE_NAME%;$CUSTOM_IMAGE_NAME;g" -e "s;%CUSTOM_IMAGE_VERSION%;$CUSTOM_IMAGE_VERSION;g" -e "s;%doctl_VERSION%;$doctl_VERSION;g" >> $Dockerfile
   done < $@
 }
 
