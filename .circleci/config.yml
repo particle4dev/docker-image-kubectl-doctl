@@ -40,4 +40,4 @@ workflows:
       - publish:
           filters:
             branches:
-              only: create-dockerfile
+              only: master
