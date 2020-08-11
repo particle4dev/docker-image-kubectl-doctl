@@ -27,6 +27,7 @@ This docker image contains the following software stack:
 - doctl
 
 ```sh
+# get credentials
 $ docker run \
 --rm \
 --env-file $ENV_FILE \
@@ -37,6 +38,7 @@ particle4dev/kubectl-doctl doctl kubernetes cluster kubeconfig save <cluster_nam
 - kubectl
 
 ```sh
+# get k8s nodes
 $ docker run \
 --rm \
 --env-file $ENV_FILE \
