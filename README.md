@@ -2,8 +2,7 @@
 
 This repository contains Dockerized [kubectl](https://github.com/kubernetes/kubectl) with [doctl](https://github.com/digitalocean/doctl). Repository name in Docker Hub: [particle4dev/kubectl-doctl](https://hub.docker.com/r/particle4dev/kubectl-doctl)
 
-
-
+**The problem** that this image tried to solved:
 
 
 
@@ -11,7 +10,7 @@ This repository contains Dockerized [kubectl](https://github.com/kubernetes/kube
 
 <br />
 
-[![CircleCI](https://circleci.com/gh/particle4dev/docker-node.svg?style=svg)](https://circleci.com/gh/particle4dev/docker-node)
+[![CircleCI](https://circleci.com/gh/particle4dev/docker-image-kubectl-doctl.svg?style=svg)](https://circleci.com/gh/particle4dev/docker-image-kubectl-doctl)
 
 ## Configuration
 
