@@ -96,5 +96,8 @@ fi
 
 docker_command=$(generate_command $@)
 echo "$3: executing $docker_command"
+
+cat $Dockerfile
+
 eval $docker_command
 docker push $3
