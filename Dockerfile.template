@@ -48,7 +48,7 @@ RUN curl -LO https://get.helm.sh/helm-v${HELM_VERSION}-linux-arm64.tar.gz && \
   rm -r ./helm-v${HELM_VERSION}-linux-arm64.tar.gz && \
   chmod +x ./linux-arm64/helm && \
   mv ./linux-arm64/helm /usr/local/bin/helm && \
-  rm -f ./linux-arm64
+  rm -r ./linux-arm64
 
 # remove packages
 RUN apk del .build-deps
