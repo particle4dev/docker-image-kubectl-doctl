@@ -41,6 +41,9 @@ RUN curl -LO https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VE
   chmod +x ./doctl && \
   mv ./doctl /usr/local/bin/doctl
 
+# install helm
+RUN curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
 # remove packages
 RUN apk del .build-deps
 
